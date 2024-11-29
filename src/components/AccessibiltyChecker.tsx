@@ -1,12 +1,7 @@
 import { useState } from 'react';
-import type { Result, ImpactValue, NodeResult } from 'axe-core';
+import type { Result} from 'axe-core';
 import axe from 'axe-core';
 
-// Define our interfaces using axe-core's types
-interface Violation extends Omit<Result, 'impact'> {
-  impact: ImpactValue;
-  nodes: Array<NodeResult>;
-}
 
 interface CheckResults {
   violations: Result[];
