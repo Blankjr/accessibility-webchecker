@@ -3,7 +3,7 @@
 ## Overview
 This tool helps identify accessibility issues in web content by analyzing HTML code against WCAG (Web Content Accessibility Guidelines) standards. It provides feedback about potential barriers that might prevent people with disabilities from using your website effectively.
 
-Check out the live demo: [Web Accessibility Checker](https://accessibilty-webchecker.vercel.app/)
+Check out the live demo: [Web Accessibility Checker](https://accessibility-webchecker.vercel.app/)
 
 ![Project Screenshot](./screenshot.png)
 
