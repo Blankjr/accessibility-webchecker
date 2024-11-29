@@ -1,24 +1,18 @@
 import { useState } from 'react';
+import type { Result, ImpactValue, NodeResult } from 'axe-core';
 import axe from 'axe-core';
 
-interface Violation {
-  id: string;
-  impact: string;
-  description: string;
-  help: string;
-  helpUrl: string;
-  nodes: Array<{
-    html: string;
-    failureSummary?: string;
-    target: string[];
-  }>;
+// Define our interfaces using axe-core's types
+interface Violation extends Omit<Result, 'impact'> {
+  impact: ImpactValue;
+  nodes: Array<NodeResult>;
 }
 
 interface CheckResults {
-  violations: Violation[];
-  passes: any[];
-  incomplete: any[];
-  inapplicable: any[];
+  violations: Result[];
+  passes: Result[];
+  incomplete: Result[];
+  inapplicable: Result[];
 }
 
 export default function AccessibilityChecker() {
@@ -44,7 +38,9 @@ export default function AccessibilityChecker() {
 
       // Run axe analysis
       const results = await axe.run(tempContainer);
-      setResults(results);
+      
+      // Cast the results to our interface
+      setResults(results as unknown as CheckResults);
 
       // Cleanup
       document.body.removeChild(tempContainer);
@@ -119,7 +115,7 @@ export default function AccessibilityChecker() {
                   <p className="text-gray-600 mb-2">{violation.description}</p>
                   <div className="mb-2">
                     <span className="px-2 py-1 bg-red-50 text-red-700 rounded text-sm">
-                      Impact: {violation.impact}
+                      Impact: {violation.impact || 'Unknown'}
                     </span>
                   </div>
                   {violation.nodes.map((node, j) => (
