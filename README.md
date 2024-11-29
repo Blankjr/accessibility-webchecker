@@ -27,30 +27,75 @@ The checker shows four categories:
 
 ### 3. Test Cases
 
-#### Good Example: Product Filter Interface
-```html
-<div role="search">
-    <label for="price">Price:</label>
-    <input type="number" id="price" name="price">
-</div>
-```
-This passes accessibility checks because it:
-- Has proper labels for inputs
-- Uses semantic HTML
-- Includes ARIA roles
-- Has clear structure
-
 #### Common Issues Example:
 ```html
-<div>
-    <input type="number" placeholder="Price">
-</div>
+
+### Select Element Accessibility Test
+
+#### Failing Example (Shows Violation):
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Form</title>
+</head>
+<body>
+    <main>
+        <h1>Product Details</h1>
+        <form>
+            <div>
+                <select>
+                    <option value="">Select category</option>
+                    <option value="1">Electronics</option>
+                    <option value="2">Books</option>
+                </select>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
 ```
-This fails because it:
-- Lacks proper labels
-- Relies on placeholder text
-- Missing semantic structure
-- No ARIA roles
+
+**Why it fails:**
+- The `<select>` element has no associated label
+- Screen readers can't properly announce the purpose of this control
+- Users have no context about what they're selecting
+
+#### Passing Example (Fixed):
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Form</title>
+</head>
+<body>
+    <main>
+        <h1>Product Details</h1>
+        <form>
+            <div>
+                <label for="category">Category:</label>
+                <select id="category" name="category">
+                    <option value="">Select category</option>
+                    <option value="1">Electronics</option>
+                    <option value="2">Books</option>
+                </select>
+            </div>
+        </form>
+    </main>
+</body>
+</html>
+```
+
+**How it's fixed:**
+- Added a `<label>` element with a proper `for` attribute
+- Added matching `id` attribute to the select element
+- Added `name` attribute for form submission
+- Screen readers can now properly announce "Category" when focusing the select element
+
+**To test:**
+1. Copy either example into the accessibility checker
+2. The first example will show the "select-name" violation
+3. The second example will pass the check
 
 ## Common Issues and How to Fix Them
 
