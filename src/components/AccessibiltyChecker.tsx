@@ -17,6 +17,7 @@ export default function AccessibilityChecker() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ResultTab>('violations');
+  const [showHelp, setShowHelp] = useState(false);
 
   const runAccessibilityCheck = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -63,11 +64,91 @@ export default function AccessibilityChecker() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Accessibility Checker</h1>
-      
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Accessibility Checker</h1>
+        <button
+          onClick={() => setShowHelp(true)}
+          className="w-10 h-10 flex items-center justify-center text-xl font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors border-2 border-blue-200 hover:border-blue-300"
+          aria-label="Help Guide"
+        >
+          ?
+        </button>
+      </div>
+
+      {/* Help Modal */}
+      {showHelp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-3xl max-h-[80vh] overflow-y-auto m-4 p-6">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold">How to Use the Accessibility Checker</h2>
+              <button
+                onClick={() => setShowHelp(false)}
+                className="w-8 h-8 flex items-center justify-center text-black bg-red-200 hover:bg-red-500 rounded-lg text-xl font-medium border-solid border-2 border-black"
+                aria-label="Close help guide"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Basic Usage</h3>
+                <ol className="list-decimal list-inside space-y-1">
+                  <li>Copy your HTML code</li>
+                  <li>Paste it into the textarea below</li>
+                  <li>Click "Check Accessibility"</li>
+                  <li>Review the results in each category</li>
+                </ol>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Understanding Results</h3>
+                <ul className="space-y-2">
+                  <li><span className="font-medium text-red-600">Violations:</span> Critical issues that must be fixed</li>
+                  <li><span className="font-medium text-yellow-600">Needs Review:</span> Issues that require human judgment</li>
+                  <li><span className="font-medium text-green-600">Passed:</span> Elements that meet accessibility standards</li>
+                  <li><span className="font-medium text-gray-600">Not Applicable:</span> Rules that don't apply to your content</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Common Issues to Check</h3>
+                <ul className="space-y-2">
+                  <li><span className="font-medium">Images:</span> Should have descriptive alt text</li>
+                  <li><span className="font-medium">Forms:</span> All inputs should have labels</li>
+                  <li><span className="font-medium">Links:</span> Should have meaningful text</li>
+                  <li><span className="font-medium">Headings:</span> Should follow proper structure</li>
+                  <li><span className="font-medium">Color:</span> Should have sufficient contrast</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Tips for Better Results</h3>
+                <ul className="space-y-1">
+                  <li>Use semantic HTML elements</li>
+                  <li>Ensure all interactive elements are keyboard-accessible</li>
+                  <li>Provide clear error messages and instructions</li>
+                  <li>Use ARIA labels when necessary</li>
+                  <li>Test with actual assistive technologies when possible</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowHelp(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Got it, thanks!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form onSubmit={runAccessibilityCheck} className="mb-6">
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="html-input">
+          <label className="block text-lg font-medium mb-2" htmlFor="html-input">
             HTML to Check:
           </label>
           <textarea
@@ -78,7 +159,7 @@ export default function AccessibilityChecker() {
             placeholder="Paste your HTML here..."
           />
         </div>
-        
+
         <button
           type="submit"
           disabled={loading || !html.trim()}
@@ -97,7 +178,7 @@ export default function AccessibilityChecker() {
       {results && (
         <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <button 
+            <button
               onClick={() => setActiveTab('violations')}
               className={getTabStyles('violations')}
             >
@@ -155,7 +236,7 @@ export default function AccessibilityChecker() {
                       )}
                     </div>
                   ))}
-                  <a 
+                  <a
                     href={violation.helpUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -174,7 +255,7 @@ export default function AccessibilityChecker() {
               <h2 className="text-xl font-bold text-yellow-600">Tests Needing Review</h2>
               <div className="bg-white rounded-lg shadow">
                 {results.incomplete.map((item, i) => (
-                  <div 
+                  <div
                     key={i}
                     className="p-4 border-b last:border-b-0 hover:bg-gray-50"
                   >
@@ -193,7 +274,7 @@ export default function AccessibilityChecker() {
               <h2 className="text-xl font-bold text-green-600">Passed Accessibility Tests</h2>
               <div className="bg-white rounded-lg shadow">
                 {results.passes.map((pass, i) => (
-                  <div 
+                  <div
                     key={i}
                     className="p-4 border-b last:border-b-0 hover:bg-gray-50"
                   >
@@ -211,7 +292,7 @@ export default function AccessibilityChecker() {
               <h2 className="text-xl font-bold text-gray-600">Not Applicable Tests</h2>
               <div className="bg-white rounded-lg shadow">
                 {results.inapplicable.map((item, i) => (
-                  <div 
+                  <div
                     key={i}
                     className="p-4 border-b last:border-b-0 hover:bg-gray-50"
                   >
